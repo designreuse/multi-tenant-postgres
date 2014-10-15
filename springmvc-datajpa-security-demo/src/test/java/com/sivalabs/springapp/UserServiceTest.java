@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.multi.springapp.config.AppConfig;
-import com.multi.springapp.entities.User;
-import com.multi.springapp.services.UserService;
+import com.sivalabs.springapp.config.AppConfig;
+import com.sivalabs.springapp.entities.User;
+import com.sivalabs.springapp.services.UserService;
 
 /**
  * @author Siva
