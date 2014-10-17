@@ -12,41 +12,42 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
 /**
  * @author Siva
  *
  */
 @Entity
 @Table(name = "ROLES")
-public class Role implements Serializable
-{
+public class Role extends AbstractPersistable<Integer> {
+
 	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "role_id")
-	private Integer id;
-	@Column(name="role_name",nullable=false)
-	private String roleName;
 	
+	@Column(name = "role_name", nullable = false)
+	private String roleName;
+
 	public Role() {
 	}
-	
+
 	public Role(String roleName) {
 		this.roleName = roleName;
 	}
+
 	public Role(Integer id, String roleName) {
-		this.id = id;
+		super.setId(id);
 		this.roleName = roleName;
 	}
+
+	@Column(name = "role_id")
 	public Integer getId() {
-		return id;
+		return super.getId();
 	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+
 	public String getRoleName() {
 		return roleName;
 	}
+
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}

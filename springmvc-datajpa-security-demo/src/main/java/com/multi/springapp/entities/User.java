@@ -18,32 +18,37 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
 /**
  * @author katsi02
  *
  */
 @Entity
-@Table(name="USERS")
-public class User 
-{
-	@Id @GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+@Table(name = "USERS")
+public class User extends AbstractPersistable<Integer> {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
-	@Column(nullable=false, unique=true)
+	@Column(nullable = false, unique = true)
 	private String email;
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String password;
 	private Date dob;
-	
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="user_id")
+
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
 	private Set<Role> roles = new HashSet<>();
-	
+
 	public User() {
 	}
 
-	public User(int id, String name, String email, String password, Date dob) {
-		this.id = id;
+	public User(Integer id, String name, String email, String password, Date dob) {
+		super.setId(id);
 		this.name = name;
 		this.email = email;
 		this.password = password;
@@ -52,16 +57,8 @@ public class User
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", email=" + email
+		return "User [id=" + super.getId() + ", name=" + name + ", email=" + email
 				+ ", dob=" + dob + "]";
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -103,5 +100,5 @@ public class User
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
-	
+
 }

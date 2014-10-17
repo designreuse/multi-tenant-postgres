@@ -10,6 +10,7 @@ import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
+import org.springframework.stereotype.Component;
 
 import com.zaxxer.hikari.hibernate.HikariConnectionProvider;
 

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.multi.springapp.entities.User;
 
-public interface UserRepository extends JpaRepository<User, Serializable>{
+public interface UserRepository extends JpaRepository<User, Serializable> {
 
 	@Query("select u from User u where u.email=?1 and u.password=?2")
 	User login(String email, String password);
