@@ -1,21 +1,16 @@
 package com.multi.springapp.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.multi.springapp.web.config.TenantContext;
-
-@Component
-public class MultiTenantIdentifierResolver implements org.hibernate.context.spi.CurrentTenantIdentifierResolver {
-
-	@Autowired
-	private TenantContext tenantContext;
+public class MultiTenantIdentifierResolver implements
+		org.hibernate.context.spi.CurrentTenantIdentifierResolver {
 
 	public String resolveCurrentTenantIdentifier() {
-		return tenantContext.getTenantId();
+		return SecurityContextHolder.getContext().getAuthentication() == null ? "shared" : SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
 	public boolean validateExistingCurrentSessions() {
 		return true;
 	}
+
 }

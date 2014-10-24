@@ -3,6 +3,7 @@ package com.multi.springapp.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
@@ -10,7 +11,6 @@ import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
-import org.springframework.stereotype.Component;
 
 import com.zaxxer.hikari.hibernate.HikariConnectionProvider;
 
@@ -18,7 +18,13 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
  
 	private static final long serialVersionUID = 4368575201221677384L;
 	
-	private HikariConnectionProvider connectionProvider = null;
+	private static final String DRIVER_CLASS_NAME = "driverClassName";
+	private static final String URL = "url";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
+	
+	@SuppressWarnings("rawtypes")
+	private Map settings = null;
  
 	@Override
 	public boolean supportsAggressiveRelease() {
@@ -27,11 +33,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
  
 	@Override
 	public void injectServices(ServiceRegistryImplementor serviceRegistry) {
-		@SuppressWarnings("rawtypes")
-		Map lSettings = serviceRegistry.getService(ConfigurationService.class).getSettings();
-		
-		connectionProvider = new HikariConnectionProvider();
-		connectionProvider.configure(lSettings);
+		settings = serviceRegistry.getService(ConfigurationService.class).getSettings();
 	}
  
 	@Override
@@ -46,35 +48,43 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
  
 	@Override
 	public Connection getAnyConnection() throws SQLException {
-		final Connection connection = connectionProvider.getConnection();
-		return connection;
+		HikariConnectionProvider connectionProvider = new HikariConnectionProvider();
+		connectionProvider.configure(settings);
+		try {
+			return connectionProvider.getConnection();
+		}catch (SQLException e) {
+			throw new HibernateException("Could not alter JDBC connection to specified schema [shared]", e);
+		}
 	}
  
+	@SuppressWarnings("unchecked")
 	@Override
 	public Connection getConnection(String tenantIdentifier) throws SQLException {
-		final Connection connection = getAnyConnection();
+			HikariConnectionProvider connectionProvider = new HikariConnectionProvider();
+			
+			@SuppressWarnings("rawtypes")
+			Map settingsMultiTenacy = new HashMap();
+			settingsMultiTenacy.put("hibernate.connection.driver_class",settings.get("hibernate.connection.driver_class"));
+			settingsMultiTenacy.put("hibernate.connection.username",settings.get("hibernate.connection.username"));
+			settingsMultiTenacy.put("hibernate.connection.password",settings.get("hibernate.connection.password"));
+			settingsMultiTenacy.put("hibernate.connection.url", "jdbc:postgresql://127.0.0.1:5432/"+tenantIdentifier);
+			
 		try {
-			ResultSet resultSet = connection.createStatement().executeQuery("SELECT 1 from pg_database WHERE datname='" + tenantIdentifier + "'");
-			if(resultSet.getInt(0) == 0 ){
-				
+			ResultSet resultSet = getAnyConnection().createStatement().executeQuery("SELECT 1 from pg_database WHERE datname='" + tenantIdentifier + "'");
+			if(!resultSet.next()){
+				getAnyConnection().createStatement().executeQuery("create database " + tenantIdentifier + "");
 			}
-			connection.createStatement().execute("SET SCHEMA '" + tenantIdentifier + "'");
+			connectionProvider.configure(settingsMultiTenacy);
+			return connectionProvider.getConnection();
 		}
 		catch (SQLException e) {
 			throw new HibernateException("Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e);
 		}
-		return connection;
 	}
  
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
-		try {
-			connection.createStatement().execute("SET SCHEMA 'public'");
-		}
-		catch (SQLException e) {
-			throw new HibernateException("Could not alter JDBC connection to specified schema [public]", e);
-		}
-		connectionProvider.closeConnection(connection);
+		new HikariConnectionProvider().closeConnection(connection);
 	}
  
 	@Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:security="http://www.springframework.org/schema/security" xmlns:lang="http://www.springframework.org/schema/lang"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:repository="http://www.springframework.org/schema/data/repository"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans  
            http://www.springframework.org/schema/beans/spring-beans.xsd  
            http://www.springframework.org/schema/tx   
@@ -12,36 +12,39 @@
            http://www.springframework.org/schema/security/spring-security.xsd  
            http://www.springframework.org/schema/lang   
            http://www.springframework.org/schema/lang/spring-lang.xsd
+           http://www.springframework.org/schema/data/repository
+           http://www.springframework.org/schema/data/repository/spring-repository.xsd
            http://www.springframework.org/schema/data/jpa
     	   http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
+	<!-- ======================================================================================== -->
+	<!-- ===================================== DATASOURCE ======================================= -->
+	<!-- ======================================================================================== -->
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" />
+	</bean>
+
+	<bean id="dataSourceSpied" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://localhost:5432/shared" />
+		<property name="url" value="jdbc:postgresql://127.0.0.1:5432/shared_test" />
 		<property name="username" value="postgres" />
 		<property name="password" value="root" />
 	</bean>
-	
-	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="showSql" value="true"/>
-        <property name="generateDdl" value="true"/>
-        <property name="database" value="POSTGRESQL"/>
-    </bean>
 
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceXmlLocation" value="file:src/test/resources/META-INF/persistence.xml" />
-		<property name="persistenceUnitName" value="entityPU" />
 		<property name="packagesToScan" value="com.multi.springapp.entities" />
 		<property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider" />
 		<property name="dataSource" ref="dataSource" />
-		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
-		<property name="jpaPropertyMap">
+		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
 				<prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
 				<prop key="hibernate.connection.username">postgres</prop>
 				<prop key="hibernate.connection.password">root</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.multiTenancy">DATABASE</prop>
 				<prop key="hibernate.multi_tenant_connection_provider">com.multi.springapp.dao.MultiTenantProvider</prop>
 				<prop key="hibernate.tenant_identifier_resolver">com.multi.springapp.dao.MultiTenantIdentifierResolver</prop>
@@ -49,22 +52,65 @@
 		</property>
 	</bean>
 
-	<!-- <bean id="sessionFactory" class="org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean">
-		<property name="entityManagerFactory" ref="entityManagerFactory" /> -->
-		<!-- <property name="dataSource" ref="dataSource" /> <property name="packagesToScan" value="com.multi.springapp.entities" /> <property name="hibernateProperties"> 
-			<props> <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop> <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop> 
-			<prop key="hibernate.connection.username">postgres</prop> <prop key="hibernate.connection.password">root</prop> <prop key="hibernate.multiTenancy">DATABASE</prop> 
-			<prop key="hibernate.multi_tenant_connection_provider">com.multi.springapp.dao.MultiTenantProvider</prop> <prop key="hibernate.tenant_identifier_resolver">com.multi.springapp.dao.MultiTenantIdentifierResolver</prop> 
-			</props> </property> -->
+	<bean id="entityManagerFactoryNonMultiTenancy" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="packagesToScan" value="com.multi.springapp.entities" />
+		<property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+				<prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
+				<prop key="hibernate.connection.username">postgres</prop>
+				<prop key="hibernate.connection.password">root</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- <bean id="sessionFactory" class="org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean"> <property name="entityManagerFactory" ref="entityManagerFactory" 
+		/> -->
+	<!-- <property name="dataSource" ref="dataSource" /> <property name="packagesToScan" value="com.multi.springapp.entities" /> <property name="hibernateProperties"> 
+		<props> <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop> <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop> 
+		<prop key="hibernate.connection.username">postgres</prop> <prop key="hibernate.connection.password">root</prop> <prop key="hibernate.multiTenancy">DATABASE</prop> 
+		<prop key="hibernate.multi_tenant_connection_provider">com.multi.springapp.dao.MultiTenantProvider</prop> <prop key="hibernate.tenant_identifier_resolver">com.multi.springapp.dao.MultiTenantIdentifierResolver</prop> 
+		</props> </property> -->
 	<!-- </bean> -->
 
-<!-- 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="autodetectDataSource" value="false" />
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean> -->
+	<!-- <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"> <property name="autodetectDataSource" value="false" 
+		/> <property name="sessionFactory" ref="sessionFactory" /> </bean> -->
 
 	<!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
 
-	<jpa:repositories base-package="com.multi.springapp.repositories" />
+
+	<!-- ======================================================================================== -->
+	<!-- ============================= ANOTACOES DO SPRING E JSR250 ============================= -->
+	<!-- ======================================================================================== -->
+
+	<!-- Ativa varias anotacoes para detectar as classes bean Spring's @Required e @Autowired, JSR250 @Resource. -->
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.multi.springapp" />
+
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="transactionManagerNonMultiTenancy" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryNonMultiTenancy" />
+	</bean>
+
+	<jpa:repositories base-package="com.multi.springapp.repositories" entity-manager-factory-ref="entityManagerFactoryNonMultiTenancy"
+		transaction-manager-ref="transactionManagerNonMultiTenancy">
+		<repository:exclude-filter type="annotation" expression="com.multi.springapp.repositories.MultiTenancy" />
+	</jpa:repositories>
+
+	<jpa:repositories base-package="com.multi.springapp.repositories" entity-manager-factory-ref="entityManagerFactory"
+		transaction-manager-ref="transactionManager">
+		<repository:exclude-filter type="annotation" expression="com.multi.springapp.repositories.NonMultiTenancy" />
+	</jpa:repositories>
 
 </beans>  

@@ -39,7 +39,7 @@ public class UserResource {
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public User findUser(@PathVariable("id") int id) {
+	public User findUser(@PathVariable("id") Long id) {
 		return userService.findUserById(id);
 	}
 	
@@ -59,7 +59,7 @@ public class UserResource {
 	
 	@RequestMapping(value="{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
+	public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
 		userService.deleteUser(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

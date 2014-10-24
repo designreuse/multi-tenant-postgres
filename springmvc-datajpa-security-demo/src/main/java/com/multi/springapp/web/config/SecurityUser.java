@@ -27,10 +27,10 @@ public class SecurityUser extends User implements UserDetails
 		{
 			this.setId(user.getId());
 			this.setName(user.getName());
-			this.setEmail(user.getEmail());
+		/*	this.setEmail(user.getEmail());
 			this.setPassword(user.getPassword());
 			this.setDob(user.getDob());
-			this.setRoles(user.getRoles());
+			this.setRoles(user.getRoles());*/
 		}		
 	}
 	
@@ -38,7 +38,7 @@ public class SecurityUser extends User implements UserDetails
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
-		Set<Role> userRoles = this.getRoles();
+		Set<Role> userRoles = null;//this.getRoles();
 		
 		if(userRoles != null)
 		{
@@ -52,12 +52,12 @@ public class SecurityUser extends User implements UserDetails
 
 	@Override
 	public String getPassword() {
-		return super.getPassword();
+		return null;//super.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return super.getEmail();
+		return null;//super.getEmail();
 	}
 
 	@Override

@@ -12,14 +12,60 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<logback.version>1.0.13</logback.version>
 		<spring.version>4.1.1.RELEASE</spring.version>
-		<spring-data-jpa.version>1.7.0.RELEASE</spring-data-jpa.version>
+		<spring-data-jpa-version>1.7.0.RELEASE</spring-data-jpa-version>
 		<spring-security.version>3.2.0.RELEASE</spring-security.version>
-		<hibernate.version>4.3.6.Final</hibernate.version>
+		<hibernate-version>4.3.6.Final</hibernate-version>
+		<hibernate-validator-version>4.3.1.Final</hibernate-validator-version>
 		<aspectj.version>1.7.2</aspectj.version>
 		<mysql.version>5.1.26</mysql.version>
 		<jackson-json.version>2.3.1</jackson-json.version>
 		<commons-dbcp.version>1.2.2</commons-dbcp.version>
 		<commons-lang3.version>3.1</commons-lang3.version>
+		<integrationSourceDirectory>${basedir}/src/integrationtest</integrationSourceDirectory>
+		<integrationOutputDirectory>${basedir}/target/integrationtest-classes</integrationOutputDirectory>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>  <!-- Ensure you run mvn install before sonar:sonar -->
+		<sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
+		<sonar.surefire.reportsPath>/target/surefire-reports</sonar.surefire.reportsPath>
+		<coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
+		<sonar.jacoco.reportPath>${coverage.reports.dir}/jacoco-unit.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.itReportPath>${coverage.reports.dir}/jacoco-it.exec</sonar.jacoco.itReportPath>
+		<sonar.jacoco.jar>${basedir}/src/test/resources/jacocoagent.jar</sonar.jacoco.jar>
+		<failsafe.argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.itReportPath}</failsafe.argLine>
+
+		<beanio-version>2.1.0.M1</beanio-version>
+		<caelum-stella-version>2.0-beta1</caelum-stella-version>
+		<camel-version>2.11.1</camel-version>
+		<commons-collection-version>3.2.1</commons-collection-version>
+		<commons-lang-version>3.1</commons-lang-version>
+		<commons-io-version>2.4</commons-io-version>
+		<cxf-version>2.7.7</cxf-version>
+		<ehcache-version>2.6.6</ehcache-version>
+		<cxf.ehcache.version>2.6.6</cxf.ehcache.version>
+		<fixture-version>2.1.0</fixture-version>
+		<hamcrest-version>1.3</hamcrest-version>
+		<javax-validation-version>1.1.0.Final</javax-validation-version>
+		<javax-version>6.0</javax-version>
+		<jms-version>3.1.1</jms-version>
+		<joda-time-version>2.2</joda-time-version>
+		<jadira-usertype-version>3.1.0.CR10</jadira-usertype-version>
+		<junit-version>4.11</junit-version>
+		<com.google.guava>r03</com.google.guava>
+		<liquibase-version>2.0.5</liquibase-version>
+		<logback-version>1.0.7</logback-version>
+		<mockito-version>1.9.5</mockito-version>
+		<mq-version>4.4.2</mq-version>
+		<postgresql-jdbc-version>9.2-1003-jdbc4</postgresql-jdbc-version>
+		<querydsl-apt-version>2.9.0</querydsl-apt-version>
+		<querydsl-hql-version>1.9.7</querydsl-hql-version>
+		<querydsl-version>2.9.0</querydsl-version>
+		<querydsl-sql>2.9.0</querydsl-sql>
+		<scannotation-version>1.0.3</scannotation-version>
+		<slf4j-version>1.7.5</slf4j-version>
+		<velocity-version>1.7</velocity-version>
+		<reflection-version>0.9.9-RC1</reflection-version>
+		<mirror-version>1.6.1</mirror-version>
+		<primefaces-version>3.5</primefaces-version>
+		<bean-matchers-version>0.8.1</bean-matchers-version>
 	</properties>
 
 	<build>
@@ -37,14 +83,56 @@
 		</plugins>
 	</build>
 
+	<!-- ================================================================================================ -->
+	<!-- =========================================== REPOSITORY ========================================= -->
+	<!-- ================================================================================================ -->
+	<repositories>
+
+		<repository>
+			<id>sonatype</id>
+			<url>https://repository.sonatype.org/content/groups/forge/</url>
+		</repository>
+
+		<repository>
+			<id>thirdparty-releases</id>
+			<name>JBoss Thirdparty Releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+		</repository>
+
+		<repository>
+			<id>spring-snasphot</id>
+			<url>https://repo.spring.io/libs-snapshot</url>
+		</repository>
+		
+	</repositories>
+	<!-- ================================================================================================ -->
+	<!-- ========================================== DEPENDENCIAS ======================================== -->
+	<!-- ================================================================================================ -->
+
 	<dependencies>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>4.1.1.RELEASE</version>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.1.0</version>
 		</dependency>
 
+
+		<!-- ======================================================================================== -->
+		<!-- ===================================== HIBERNATE ======================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator-version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -53,160 +141,427 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP-java6</artifactId>
-			<version>2.1.0</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
 		</dependency>
 
-		<!-- Logging dependencies -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>4.0.0.CI-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>junit-addons</groupId>
+			<artifactId>junit-addons</artifactId>
+			<version>1.4</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- ======================================================================================== -->
+		<!-- ===================================== APACHE COMMONS =================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>${commons-collection-version}</version>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ====================================== JODA-TIME ======================================= -->
+		<!-- ======================================================================================== -->
+
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${joda-time-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jadira.usertype</groupId>
+			<artifactId>usertype.core</artifactId>
+			<version>${jadira-usertype-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>hibernate-entitymanager</artifactId>
+					<groupId>org.hibernate</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- ======================================================================================== -->
+		<!-- =================================== SPRING SECURITY ==================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ================================== QUERY DSL =========================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-core</artifactId>
+			<version>${querydsl-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ============================== QUERY DSL - HIBERNATE =================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<version>${querydsl-apt-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-hql</artifactId>
+			<version>${querydsl-hql-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ================================= HIBERNATE AUDITORIA ================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-envers</artifactId>
+			<version>${hibernate-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>hibernate-entitymanager</artifactId>
+					<groupId>org.hibernate</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ==================================== SPRING DATA ======================================= -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-jpa-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- =============================== CAELUM BEAN VALIDATION ================================= -->
+		<!-- ======================================================================================== -->
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
+			<version>${slf4j-version}</version>
+		</dependency>
+
+		<!-- ====================================================================================================== -->
+		<!-- ========================================= DEPENDENCIAS DE TESTE ====================================== -->
+		<!-- ====================================================================================================== -->
+
+		<!-- ======================================================================================== -->
+		<!-- ======================================== JUNIT ========================================= -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ======================================== HAMCREST ====================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>${hamcrest-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- =================================== FIXTURE FACTORY ==================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>br.com.six2six</groupId>
+			<artifactId>fixture-factory</artifactId>
+			<version>${fixture-version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ==================================== SCANNOTATION ====================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.scannotation</groupId>
+			<artifactId>scannotation</artifactId>
+			<version>${scannotation-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ==================================== BEAN-MATCHERS ===================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>com.google.code.bean-matchers</groupId>
+			<artifactId>bean-matchers</artifactId>
+			<version>${bean-matchers-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ======================================= LIQUIBASE ====================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>${liquibase-version}</version>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ===================================== HIBERNATE ======================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- =================================== POSTGRE JDBC ======================================= -->
+		<!-- ======================================================================================== -->
+
+		<!-- ======================================================================================== -->
+		<!-- ================================== SPRING FRAMEWORK ==================================== -->
+		<!-- ======================================================================================== -->
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
 		</dependency>
 
-		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-asm</artifactId>
+			<version>3.1.4.RELEASE</version>
+		</dependency>
 
-
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
-		<!-- Spring Data JPA dependencies -->
+
+		<!-- ======================================================================================== -->
+		<!-- =================================== SLF4J ============================================= -->
+		<!-- ======================================================================================== -->
 
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>${spring-data-jpa.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.5</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.7.5</version>
 		</dependency>
 
-		<!-- SpringSecurity dependencies -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.slf4j</groupId> -->
+		<!-- <artifactId>jul-to-slf4j</artifactId> -->
+		<!-- <version>1.7.5</version> -->
+		<!-- </dependency> -->
+
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${spring-security.version}</version>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.agent</artifactId>
+			<version>0.6.4.201312101107</version>
+			<scope>test</scope>
 		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ====================================== VELOCITY ======================================== -->
+		<!-- ======================================================================================== -->
+
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring-security.version}</version>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>${velocity-version}</version>
 		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>ch.qos.logback</groupId> -->
+		<!-- <artifactId>logback-classic</artifactId> -->
+		<!-- <version>${logback-version}</version> -->
+		<!-- </dependency> -->
+
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<version>${spring-security.version}</version>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.7.2</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
-
-		<!-- Testing dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- DB dependencies -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>${commons-dbcp.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson-json.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.3</version>
-		</dependency>
-
-		<!-- Web dependencies -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
+			<version>1.7.2</version>
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- ======================================================================================== -->
+		<!-- ======================================== QUERYDSL ====================================== -->
+		<!-- ======================================================================================== -->
+
 		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
-			<scope>compile</scope>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-sql</artifactId>
+			<version>${querydsl-sql}</version>
 		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ==================================== MOCKITO =========================================== -->
+		<!-- ======================================================================================== -->
+
 		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-			<scope>compile</scope>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito-version}</version>
+			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.lazyluke</groupId>
+			<artifactId>log4jdbc-remix</artifactId>
+			<version>0.2.7</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- ======================================================================================== -->
+		<!-- ======================================= REFLECTION ===================================== -->
+		<!-- ======================================================================================== -->
+
+
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflection-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.vidageek</groupId>
+			<artifactId>mirror</artifactId>
+			<version>${mirror-version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
+
 
 	<dependencyManagement>
 		<dependencies>
