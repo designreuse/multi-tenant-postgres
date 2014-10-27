@@ -20,11 +20,8 @@ import com.multi.springapp.repositories.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/application-context.xml")
-@TestExecutionListeners(listeners = { ServletTestExecutionListener.class,
-		DependencyInjectionTestExecutionListener.class,
-		DirtiesContextTestExecutionListener.class,
-		TransactionalTestExecutionListener.class,
-		WithSecurityContextTestExecutionListener.class })
+@TestExecutionListeners(listeners = { ServletTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
+		DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class, WithSecurityContextTestExecutionListener.class })
 public class MultiTenancyTest {
 
 	@Autowired
@@ -32,13 +29,33 @@ public class MultiTenancyTest {
 
 	@Autowired
 	private TextoRepository textoRepository;
-	
+
 	@Test
 	@WithMockUser(username = "admin", roles = { "USER", "ADMIN" })
 	public void testName() throws Exception {
 		User user = new User("admin");
 		userRepository.save(user);
-		Texto texto =new Texto();
+		Texto texto = new Texto();
+		texto.setTexto("blablabla");
+		textoRepository.save(texto);
+	}
+
+	@Test
+	@WithMockUser(username = "teste1", roles = { "USER", "ADMIN" })
+	public void teste1() throws Exception {
+		User user = new User("teste1");
+		userRepository.save(user);
+		Texto texto = new Texto();
+		texto.setTexto("blablabla");
+		textoRepository.save(texto);
+	}
+
+	@Test
+	@WithMockUser(username = "teste2", roles = { "USER", "ADMIN" })
+	public void teste2() throws Exception {
+		User user = new User("teste2");
+		userRepository.save(user);
+		Texto texto = new Texto();
 		texto.setTexto("blablabla");
 		textoRepository.save(texto);
 	}
