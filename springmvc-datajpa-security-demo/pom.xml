@@ -103,7 +103,7 @@
 			<id>spring-snasphot</id>
 			<url>https://repo.spring.io/libs-snapshot</url>
 		</repository>
-		
+
 	</repositories>
 	<!-- ================================================================================================ -->
 	<!-- ========================================== DEPENDENCIAS ======================================== -->
@@ -132,6 +132,12 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate-validator-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>3.2.2</version>
 		</dependency>
 
 		<dependency>

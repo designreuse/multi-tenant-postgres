@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<!-- Tipo padrão para enumerados -->
+	<property name="ENUM_TYPE" value="java.sql.Types.VARCHAR(80)" />
+	<property name="BOOLEAN_TYPE" value="java.sql.Types.BOOLEAN" />
+	<property name="LOB_TYPE" value="OID" />
+	<property name="TEXT_TYPE" value="TEXT" />
+
+	<!-- Tipos id para database Postgres -->
+	<property name="ID_LONG" value="BIGSERIAL"></property>
+	<property name="ID_INTEGER" value="SERIAL" />
+
+	<include file="prod/db.changelog-1.0.xml" relativeToChangelogFile="true" />
+
+</databaseChangeLog> 

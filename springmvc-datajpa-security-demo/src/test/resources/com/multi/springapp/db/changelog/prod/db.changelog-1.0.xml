@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<!-- O QUE FAZER QUANDO A CONDICAO FALHAR OU OCORRER UM ERRO(onFail/onError)? -->
+	<!-- ONFAIL/ONERROR - OPCOES -->
+	<!-- HALT - Imediatamente parar a execução de todo o log de alterações. [padrão] -->
+	<!-- CONTINUE - Pula as alterações. O conjunto de alterações será tentando executar novamente na próxima atualização. Continuar com o log de alterações. -->
+	<!-- MARK_RAN - -->
+	<!-- WARN - Alerta e continuar a execução das mudanças definidas normalmente. -->
+
+	<preConditions onFail="HALT">
+		<and>
+			<dbms type="postgresql" />
+			<runningAs username="postgres" />
+		</and>
+	</preConditions>
+
+	<changeSet id="#1.0.0.1" author="ismael.gome">
+		<comment>create tabela texto</comment>
+		<createSequence sequenceName="hibernate_sequence" />
+
+	</changeSet>
+
+	<changeSet id="#1.0.0" author="ismael.gome">
+		<comment>create tabela texto</comment>
+		<sql>
+			CREATE TABLE texto
+			(
+			id bigint NOT NULL,
+			texto character varying(255),
+			CONSTRAINT texto_pkey PRIMARY KEY (id)
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE texto
+			OWNER TO postgres;
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog> 
